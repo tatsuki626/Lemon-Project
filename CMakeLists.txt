@@ -67,6 +67,12 @@ mark_as_advanced(FORCE ENABLE_OPENGL)
 option(ENABLE_WEB_SERVICE "Enable web services (telemetry, etc.)" ON)
 option(ENABLE_WIFI_SCAN "Enable WiFi scanning" OFF)
 
+option(POKEMULATION_OFFLINE_BUILD "Build Lemon core for Pokemulation without network services" OFF)
+if (POKEMULATION_OFFLINE_BUILD)
+    set(ENABLE_WEB_SERVICE OFF CACHE BOOL "Enable web services (telemetry, etc.)" FORCE)
+    set(ENABLE_UPDATE_CHECKER OFF CACHE BOOL "Enable update checker (Android)" FORCE)
+endif()
+
 option(YUZU_TESTS "Compile tests" "${BUILD_TESTING}")
 
 option(YUZU_DOWNLOAD_ANDROID_VVL "Download validation layer binary for android" ON)
