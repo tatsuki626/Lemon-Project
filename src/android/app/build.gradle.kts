@@ -41,6 +41,8 @@ android {
 
     val isNightly =
         providers.gradleProperty("nightly").orNull?.toBooleanStrictOrNull() ?: false
+    val isPokemulationOffline =
+        providers.gradleProperty("pokemulationOffline").orNull?.toBooleanStrictOrNull() ?: false
     val isExperimental =
         providers.gradleProperty("experimental").orNull?.toBooleanStrictOrNull() ?: false
 
@@ -90,7 +92,6 @@ android {
                 arguments.addAll(
                     listOf(
                         "-DENABLE_QT=0", // Don't use QT
-                        "-DENABLE_WEB_SERVICE=1", // Enable web service
                         "-DANDROID_ARM_NEON=true", // cryptopp requires Neon to work
                         "-DYUZU_USE_CPM=ON",
                         "-DCPMUTIL_FORCE_BUNDLED=ON",
@@ -123,7 +124,9 @@ android {
                     arguments.add("-DYUZU_GIT_COMMIT_HASH=${getGitCommitHash()}")
                 }
 
-                if (isNightly) {
+                if (isPokemulationOffline) {
+                    arguments.add("-DPOKEMULATION_OFFLINE_BUILD=ON")
+                } else if (isNightly) {
                     arguments.addAll(listOf(
                         "-DENABLE_UPDATE_CHECKER=ON",
                         "-DNIGHTLY_BUILD=ON",
