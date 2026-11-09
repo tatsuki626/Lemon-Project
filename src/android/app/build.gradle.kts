@@ -94,7 +94,6 @@ android {
                 arguments.addAll(
                     listOf(
                         "-DENABLE_QT=0", // Don't use QT
-                        "-DENABLE_WEB_SERVICE=${if (isPokemulationOffline) "OFF" else "ON"}",
                         "-DANDROID_ARM_NEON=true", // cryptopp requires Neon to work
                         "-DYUZU_USE_CPM=ON",
                         "-DCPMUTIL_FORCE_BUNDLED=ON",
@@ -128,12 +127,7 @@ android {
                 }
 
                 if (isPokemulationOffline) {
-                    arguments.addAll(
-                        listOf(
-                            "-DENABLE_UPDATE_CHECKER=OFF",
-                            "-DYUZU_DOWNLOAD_ANDROID_VVL=OFF",
-                        )
-                    )
+                    arguments.add("-DPOKEMULATION_OFFLINE_BUILD=ON")
                 } else if (isNightly) {
                     arguments.addAll(listOf(
                         "-DENABLE_UPDATE_CHECKER=ON",
