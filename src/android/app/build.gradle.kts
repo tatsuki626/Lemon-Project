@@ -43,6 +43,10 @@ android {
         providers.gradleProperty("nightly").orNull?.toBooleanStrictOrNull() ?: false
     val isExperimental =
         providers.gradleProperty("experimental").orNull?.toBooleanStrictOrNull() ?: false
+    // Pokemulation's embedded-engine spike must be buildable without enabling
+    // Lemon's network-facing web service or update checker.
+    val isPokemulationOffline =
+        providers.gradleProperty("pokemulationOffline").orNull?.toBooleanStrictOrNull() ?: false
 
     buildFeatures {
         viewBinding = true
@@ -90,7 +94,7 @@ android {
                 arguments.addAll(
                     listOf(
                         "-DENABLE_QT=0", // Don't use QT
-                        "-DENABLE_WEB_SERVICE=1", // Enable web service
+                        "-DENABLE_WEB_SERVICE=${if (isPokemulationOffline) "OFF" else "ON"}",
                         "-DANDROID_ARM_NEON=true", // cryptopp requires Neon to work
                         "-DYUZU_USE_CPM=ON",
                         "-DCPMUTIL_FORCE_BUNDLED=ON",
@@ -123,7 +127,14 @@ android {
                     arguments.add("-DYUZU_GIT_COMMIT_HASH=${getGitCommitHash()}")
                 }
 
-                if (isNightly) {
+                if (isPokemulationOffline) {
+                    arguments.addAll(
+                        listOf(
+                            "-DENABLE_UPDATE_CHECKER=OFF",
+                            "-DYUZU_DOWNLOAD_ANDROID_VVL=OFF",
+                        )
+                    )
+                } else if (isNightly) {
                     arguments.addAll(listOf(
                         "-DENABLE_UPDATE_CHECKER=ON",
                         "-DNIGHTLY_BUILD=ON",
